@@ -4,5 +4,5 @@
 # how to use:
  - npm install & npm start
  
-#tecnologies:
- - ReactJS
+# tecnologies:
+ -ReactJS
