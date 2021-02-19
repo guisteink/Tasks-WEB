@@ -15,9 +15,17 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AddIcon from "@material-ui/icons/Add";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListIcon from "@material-ui/icons/List";
 import { Link } from "react-router-dom";
+import SyncIcon from "@material-ui/icons/Sync";
+import isConnected from "../../utils/isConnected";
+import isLogged from "../../utils/isLogged";
+import isd from "../../utils/isLogged";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import SyncDisabledIcon from "@material-ui/icons/SyncDisabled";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import LockIcon from "@material-ui/icons/Lock";
+import { useHistory } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -76,12 +84,21 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginRight: 0,
   },
+  link: {
+    textDecoration: "none",
+    color: "black",
+  },
+  link2: {
+    textDecoration: "none",
+    color: "white",
+  },
 }));
 
 export default function PersistentDrawerRight() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const history = useHistory();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -90,6 +107,22 @@ export default function PersistentDrawerRight() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  function goLogin() {
+    history.push("/login");
+  }
+
+  async function Unsync() {
+    localStorage.removeItem("@groupfy/macaddress");
+    window.location.reload();
+  }
+
+  async function Logout() {
+    localStorage.removeItem("@groupfy/user");
+    window.location.reload();
+    Unsync();
+    history.push("/login")
+  }
 
   return (
     <div className={classes.root}>
@@ -102,7 +135,9 @@ export default function PersistentDrawerRight() {
       >
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            Groupfy notes
+            <Link className={classes.link2} to="/">
+              Groupfy notes
+            </Link>
           </Typography>
           <IconButton
             color="inherit"
@@ -141,7 +176,7 @@ export default function PersistentDrawerRight() {
           </IconButton>
         </div>
         <List>
-          <Link to="/task">
+          <Link className={classes.link} to="/task">
             <ListItem button>
               <ListItemIcon>
                 <AddIcon></AddIcon>
@@ -150,7 +185,7 @@ export default function PersistentDrawerRight() {
             </ListItem>
           </Link>
 
-          <Link className={classes.link} to="/all">
+          <Link className={classes.link} to="/">
             <ListItem button>
               <ListItemIcon>
                 <ListIcon></ListIcon>
@@ -159,12 +194,30 @@ export default function PersistentDrawerRight() {
             </ListItem>
           </Link>
 
-          <ListItem button>
-            <ListItemIcon>
-              <ExitToAppIcon></ExitToAppIcon>
-            </ListItemIcon>
-            <ListItemText primary="Log out" />
-          </ListItem>
+          {isLogged ? (
+            <ListItem button onClick={Logout}>
+              <ListItemIcon>
+                <LockIcon></LockIcon>
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          ) : (
+            <ListItem button onClick={goLogin}>
+              <ListItemIcon>
+                <LockOpenIcon></LockOpenIcon>
+              </ListItemIcon>
+              <ListItemText primary="Login" />
+            </ListItem>
+          )}
+
+          <Link to="/qrcode" className={classes.link}>
+            <ListItem button>
+              <ListItemIcon>
+                <SyncIcon></SyncIcon>
+              </ListItemIcon>
+              <ListItemText primary="Sincronizacao" />
+            </ListItem>
+          </Link>
         </List>
       </Drawer>
     </div>
