@@ -3,6 +3,7 @@
 ![Screenshot](PHOTO.png)
 
 # how to use:
+ - MongoDB connect
  - npm install & npm start
  
 # tecnologies:
